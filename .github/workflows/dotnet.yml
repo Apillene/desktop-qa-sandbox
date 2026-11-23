@@ -1,0 +1,38 @@
+name: build-and-logic-checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '11.0.x'
+
+      - name: Restore and build
+        run: |
+          dotnet build src/DesktopSandbox/DesktopSandbox.csproj -c Release
+          dotnet build automation/DesktopSandbox.UiChecks/DesktopSandbox.UiChecks.csproj -c Release
+
+      - name: Logic checks
+        shell: pwsh
+        run: |
+          $checks = "automation/DesktopSandbox.UiChecks/bin/Release/net11.0-windows/DesktopSandbox.UiChecks.exe"
+          & $checks --logic | Tee-Object -FilePath logic-checks.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logic-checks
+          path: logic-checks.txt
