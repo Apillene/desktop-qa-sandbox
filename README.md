@@ -1,6 +1,7 @@
 # Desktop QA Sandbox — тестирование десктопного приложения
 
 ![.NET](https://img.shields.io/badge/.NET-11-512bd4)
+![CI](https://github.com/Apillene/desktop-qa-sandbox/actions/workflows/dotnet.yml/badge.svg)
 ![WinForms](https://img.shields.io/badge/UI-WinForms-0f766e)
 ![UI Automation](https://img.shields.io/badge/automation-UI%20Automation-0369a1)
 ![Defects](https://img.shields.io/badge/seeded%20defects-14-b91c1c)
