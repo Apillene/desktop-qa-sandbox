@@ -1,6 +1,6 @@
 # Каталог дефектов — Desktop QA Sandbox
 
-Все дефекты заложены намеренно (учебный стенд) и воспроизведены вручную и/или автоматически.
+Все дефекты заложены намеренно (учебный стенд) и воспроизведены вручную.
 Ссылки на код — по файлам `src/DesktopSandbox/`.
 
 Шкала severity: **Critical** — неверные финансовые данные/потеря данных, **Major** — сценарий работает неправильно,
@@ -17,7 +17,7 @@
 | Severity / Priority | Major / High |
 | Компонент | Registration → валидация e-mail |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строка D-01 |
+| Evidence | `evidence/07-invalid-email-accepted.png` |
 
 **Шаги:** First `QA`, Last `Tester`, Email `user@domain`, Age `25`, пароль валидный → Save.
 
@@ -40,7 +40,7 @@
 | Severity / Priority | Major / High |
 | Компонент | Registration → возраст |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строки D-02 и D-02b |
+| Evidence | `evidence/08-age-zero-accepted.png`, `evidence/09-negative-age-accepted.png` |
 
 **Шаги:** Age `0` → Save; повторить с `-5`.
 
@@ -64,7 +64,7 @@
 | Severity / Priority | Major / High |
 | Компонент | Orders → скидка |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строка D-03 |
+| Evidence | `evidence/12-discount-repeated.png` |
 
 **Шаги:** Orders → дважды нажать «Apply 10% discount».
 
@@ -157,7 +157,7 @@
 | Severity / Priority | Minor / Medium |
 | Компонент | Orders → поиск |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строка D-07 |
+| Evidence | `evidence/13-search-case-sensitive.png` |
 
 **Шаги:** Ввести `alpha` → Search; затем `Alpha` → Search.
 
@@ -203,7 +203,7 @@
 | Severity / Priority | Minor / Medium |
 | Компонент | Registration → пароль |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строка D-09 |
+| Evidence | `evidence/10-password-mismatch-error.png` |
 
 **Шаги:** Password `Passw0rd!`, Confirm `Other123!` → Save.
 
@@ -273,7 +273,7 @@
 | Severity / Priority | Minor / Medium |
 | Компонент | Notes → Clear |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строка D-12 |
+| Evidence | `evidence/14-clear-without-confirm.png` |
 
 **Шаги:** Ввести текст → Clear.
 
@@ -296,7 +296,7 @@
 | Severity / Priority | Major / High |
 | Компонент | Registration → пароль |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строка D-13 |
+| Evidence | `evidence/11-weak-password-accepted.png` |
 
 **Шаги:** Пароль `abc123` (6 символов), подтверждение совпадает → Save.
 
@@ -319,7 +319,7 @@
 | Severity / Priority | Major / High |
 | Компонент | Окно → закрытие |
 | Воспроизводимость | 100 % |
-| Evidence | `evidence/automation-run.txt`, строка D-14 |
+| Evidence | протокол ручного прогона 2026-11-23 (см. `05-test-summary.md`) |
 
 **Шаги:** Notes → ввести текст, не сохранять → закрыть окно крестиком.
 

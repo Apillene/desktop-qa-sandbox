@@ -1,120 +1,89 @@
-# Desktop QA Sandbox — тестирование десктопного приложения
+# Desktop QA Sandbox — ручное тестирование десктопного приложения
 
-![.NET](https://img.shields.io/badge/.NET-11-512bd4)
-![CI](https://github.com/Apillene/desktop-qa-sandbox/actions/workflows/dotnet.yml/badge.svg)
+![Manual QA](https://img.shields.io/badge/QA-manual%20testing-0f766e)
 ![WinForms](https://img.shields.io/badge/UI-WinForms-0f766e)
-![UI Automation](https://img.shields.io/badge/automation-UI%20Automation-0369a1)
-![Defects](https://img.shields.io/badge/seeded%20defects-14-b91c1c)
+![Defects](https://img.shields.io/badge/defects%20found-14-b91c1c)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-Учебный стенд для практики тестирования **десктопного приложения**: WinForms-приложение с тремя разделами
-(регистрация сотрудника, заказы, заметки), в которое **намеренно заложены 14 дефектов**. К приложению прилагаются
-ручные тест-кейсы, каталог дефектов и автоматический прогон на **UI Automation**, который воспроизводит каждый
-дефект и отличает его от корректного поведения.
+Учебный проект портфолио: **ручное** функциональное и негативное тестирование небольшого WinForms-приложения
+с тремя разделами — регистрация сотрудника, заказы и заметки. В приложение намеренно заложены **14 дефектов**;
+каждый из них воспроизведён вручную и подтверждён скриншотом или подробным протоколом.
 
-> **Честно о природе объекта:** это не «найденные в дикой природе» баги, а специально созданный тренажёр.
-> Ценность проекта — не в факте наличия дефектов, а в полном цикле: тест-план → кейсы → воспроизведение →
-> оформление → автоматизация → отчёт. Все дефекты реально воспроизводятся в собранном приложении.
+> **Об объекте:** это учебный стенд, а не реальный продукт. Дефекты созданы специально, чтобы показать полный
+> цикл работы тестировщика: тест-план → тест-кейсы → ручной прогон → баг-репорт → отчёт.
 
 ---
 
-## Скриншоты
+## Скриншоты дефектов
 
-| Регистрация | Заказы |
-|-------------|--------|
-| ![Регистрация](evidence/01-registration.png) | ![Заказы](evidence/03-orders.png) |
+| Регистрация | Недопустимый e-mail принят |
+|-------------|----------------------------|
+| ![Регистрация](evidence/01-registration.png) | ![E-mail](evidence/07-invalid-email-accepted.png) |
 
-| Удаление строки: итог не пересчитан | Сортировка суммы как текста |
-|-------------------------------------|-----------------------------|
+| Сырой stack trace | Возраст 0 принят |
+|-------------------|------------------|
+| ![Stack trace](evidence/02-stack-trace.png) | ![Возраст](evidence/08-age-zero-accepted.png) |
+
+| Удаление: итог не пересчитан | Сортировка суммы как текста |
+|------------------------------|-----------------------------|
 | ![Удаление](evidence/04-delete-total-stale.png) | ![Сортировка](evidence/06-sort-text.png) |
 
-| Сырой stack trace вместо валидации | Заметка молча обрезана до 255 |
-|------------------------------------|-------------------------------|
-| ![Stack trace](evidence/02-stack-trace.png) | ![Заметка](evidence/05-note-truncated.png) |
+| Заметка обрезана до 255 | Повторная скидка |
+|-------------------------|------------------|
+| ![Заметка](evidence/05-note-truncated.png) | ![Скидка](evidence/12-discount-repeated.png) |
+
+Остальные скриншоты — в каталоге [`evidence/`](evidence).
 
 ---
 
-## Что внутри
+## Что проверялось вручную
 
-| Раздел | Что проверяет |
-|--------|---------------|
-| **Registration** | Обязательные поля, e-mail, возраст, пароль и подтверждение, сообщение об успехе |
-| **Orders** | Итог по заказам, скидка, удаление строки, сортировка суммы, поиск по клиенту |
+| Раздел | Проверки |
+|--------|----------|
+| **Registration** | Обязательные поля, формат e-mail, возраст (0, отрицательный, нечисловой), пароль и подтверждение, текст сообщения об успехе |
+| **Orders** | Итог по заказам, однократная и повторная скидка, удаление строки, сортировка суммы, поиск по клиенту, сброс |
 | **Notes** | Сохранение заметки в файл, лимит 255 символов, очистка, счётчик символов |
-| **Окно** | Закрытие с несохранёнными данными, минимальный размер, навигация |
+| **Окно** | Навигация, минимальный размер, закрытие с несохранёнными данными |
+
+Всего: **38 ручных тест-кейсов**, из них 17 PASS, 16 FAIL, 5 не выполнялись (честно отмечены как N/R).
 
 ---
 
 ## Каталог дефектов
 
-| ID | Дефект | Severity | Где воспроизводится |
-|----|--------|----------|---------------------|
-| [D-01](docs/03-defect-catalog.md#d-01) | E-mail без домена верхнего уровня принимается (`user@domain`) | Major | Registration |
-| [D-02](docs/03-defect-catalog.md#d-02) | Возраст 0 и отрицательный принимаются | Major | Registration |
-| [D-03](docs/03-defect-catalog.md#d-03) | Скидка применяется повторно при каждом клике | Major | Orders |
-| [D-04](docs/03-defect-catalog.md#d-04) | Удаление строки без подтверждения | Major | Orders |
-| [D-05](docs/03-defect-catalog.md#d-05) | Итог не пересчитывается после удаления и фильтрации | Critical | Orders |
-| [D-06](docs/03-defect-catalog.md#d-06) | Суммы сортируются как текст (`0.99, 100.00, 12.00`) | Minor | Orders |
-| [D-07](docs/03-defect-catalog.md#d-07) | Поиск регистрозависимый (`alpha` ≠ `Alpha Corp`) | Minor | Orders |
-| [D-08](docs/03-defect-catalog.md#d-08) | Заметка обрезается до 255 символов без предупреждения | Major | Notes |
-| [D-09](docs/03-defect-catalog.md#d-09) | Несовпадение паролей: сообщение «Error» без указания полей | Minor | Registration |
-| [D-10](docs/03-defect-catalog.md#d-10) | Опечатка «Saved successful» | Trivial | Registration, Notes |
-| [D-11](docs/03-defect-catalog.md#d-11) | Нечисловой возраст: в UI сырой stack trace | Major | Registration |
-| [D-12](docs/03-defect-catalog.md#d-12) | Clear очищает заметку без подтверждения и undo | Minor | Notes |
-| [D-13](docs/03-defect-catalog.md#d-13) | Слабый пароль принимается (правило не подключено) | Major | Registration |
-| [D-14](docs/03-defect-catalog.md#d-14) | Закрытие с несохранённой заметкой без предупреждения | Major | Окно |
+| ID | Дефект | Severity |
+|----|--------|----------|
+| [D-01](docs/03-defect-catalog.md#d-01) | E-mail без домена верхнего уровня принимается (`user@domain`) | Major |
+| [D-02](docs/03-defect-catalog.md#d-02) | Возраст 0 и отрицательный принимаются | Major |
+| [D-03](docs/03-defect-catalog.md#d-03) | Скидка применяется повторно при каждом клике | Major |
+| [D-04](docs/03-defect-catalog.md#d-04) | Удаление строки без подтверждения | Major |
+| [D-05](docs/03-defect-catalog.md#d-05) | Итог не пересчитывается после удаления и фильтрации | Critical |
+| [D-06](docs/03-defect-catalog.md#d-06) | Суммы сортируются как текст (`0.99, 100.00, 12.00`) | Minor |
+| [D-07](docs/03-defect-catalog.md#d-07) | Поиск регистрозависимый (`alpha` ≠ `Alpha Corp`) | Minor |
+| [D-08](docs/03-defect-catalog.md#d-08) | Заметка обрезается до 255 символов без предупреждения | Major |
+| [D-09](docs/03-defect-catalog.md#d-09) | Несовпадение паролей: сообщение «Error» без указания полей | Minor |
+| [D-10](docs/03-defect-catalog.md#d-10) | Опечатка «Saved successful» | Trivial |
+| [D-11](docs/03-defect-catalog.md#d-11) | Нечисловой возраст: в UI сырой stack trace | Major |
+| [D-12](docs/03-defect-catalog.md#d-12) | Clear очищает заметку без подтверждения и undo | Minor |
+| [D-13](docs/03-defect-catalog.md#d-13) | Слабый пароль принимается (правило не подключено) | Major |
+| [D-14](docs/03-defect-catalog.md#d-14) | Закрытие с несохранённой заметкой без предупреждения | Major |
 
-Полные описания: [`docs/03-defect-catalog.md`](docs/03-defect-catalog.md).
-
----
-
-## Автоматизация
-
-Проект `automation/DesktopSandbox.UiChecks` использует **Microsoft UI Automation** (без Selenium/Appium):
-
-- запускает приложение, находит элементы по `AutomationId`;
-- вводит данные через `ValuePattern`, нажимает кнопки через `InvokePattern`;
-- читает таблицу и итог, проверяет сортировку и границы;
-- печатает Markdown-таблицу «кейс → ожидание → факт → вердикт»;
-- имеет режим `--logic` без UI — для CI.
-
-**Результат последнего прогона** (Windows 11, .NET 11):
-
-| Режим | PASS | Дефектов воспроизведено | FAIL |
-|-------|------|--------------------------|------|
-| UI (`DesktopSandbox.UiChecks.exe`) | 3 | 15 (14 уникальных ID) | 0 |
-| Logic (`--logic`) | 2 | 3 | 0 |
-
-Полные логи: [`evidence/automation-run.txt`](evidence/automation-run.txt),
-[`evidence/logic-checks.txt`](evidence/logic-checks.txt).
-
-```powershell
-# сборка
-dotnet build src/DesktopSandbox/DesktopSandbox.csproj -c Release
-dotnet build automation/DesktopSandbox.UiChecks/DesktopSandbox.UiChecks.csproj -c Release
-
-# UI-прогон (нужен интерактивный рабочий стол)
-automation\DesktopSandbox.UiChecks\bin\Release\net11.0-windows\DesktopSandbox.UiChecks.exe `
-  src\DesktopSandbox\bin\Release\net11.0-windows\DesktopSandbox.exe
-
-# логический прогон для CI
-dotnet run --project automation/DesktopSandbox.UiChecks -c Release -- --logic
-```
-
-Подробнее: [`docs/05-automation.md`](docs/05-automation.md).
+Полные описания с шагами воспроизведения: [`docs/03-defect-catalog.md`](docs/03-defect-catalog.md).
 
 ---
 
-## Сборка и запуск
+## Как запустить и протестировать вручную
 
-Требования: Windows 10/11, .NET SDK 11 (проект также собирается на .NET 8 при смене TFM).
+Требования: Windows 10/11, .NET SDK 11 (приложение собирается без прав администратора).
 
 ```powershell
 dotnet build src/DesktopSandbox/DesktopSandbox.csproj -c Release
 src\DesktopSandbox\bin\Release\net11.0-windows\DesktopSandbox.exe
 ```
 
-Скриншоты делаются скриптом `automation/Capture-Evidence.ps1` (Win32 `PrintWindow`, работает без фокуса окна).
+Затем откройте [`docs/02-test-cases.md`](docs/02-test-cases.md) и выполняйте шаги вручную.
+Для фиксации результата используйте штатный инструмент снимка экрана Windows (Win+Shift+S)
+или PrintScreen — никаких дополнительных утилит в репозитории нет.
 
 ---
 
@@ -124,32 +93,26 @@ src\DesktopSandbox\bin\Release\net11.0-windows\DesktopSandbox.exe
 desktop-qa-sandbox/
 ├─ src/DesktopSandbox/          # тестируемое WinForms-приложение
 │  ├─ Program.cs
-│  ├─ MainForm.cs               # UI + заложенные дефекты
-│  └─ Rules.cs                  # правила валидации, скидка, обрезка
-├─ automation/
-│  ├─ DesktopSandbox.UiChecks/  # UI Automation прогон + --logic
-│  └─ Capture-Evidence.ps1      # скриншоты через PrintWindow
+│  ├─ MainForm.cs
+│  └─ Rules.cs
 ├─ docs/
 │  ├─ 01-test-plan.md
-│  ├─ 02-test-cases.md          # 38 кейсов
+│  ├─ 02-test-cases.md          # 38 ручных кейсов
 │  ├─ 03-defect-catalog.md      # D-01…D-14
 │  ├─ 04-environment.md
-│  ├─ 05-automation.md
-│  └─ 06-test-summary.md
-└─ evidence/                    # скриншоты и логи прогонов
+│  └─ 05-test-summary.md
+└─ evidence/                    # скриншоты, сделанные во время ручного прогона
 ```
 
 ---
 
 ## Что демонстрирует проект
 
-- Умение тестировать **десктоп**, а не только веб: UI Automation, работа с таблицами, диалогами, файлами.
+- Умение структурировать **ручное** тестирование десктопного приложения: план, кейсы, баг-репорты, отчёт.
 - Понимание разницы между «правило есть» и «правило подключено» (D-13: `Rules.IsValidPassword` существует,
   но не вызывается).
-- Навык писать воспроизводимые баг-репорты с точной локализацией (файл/строка/метод).
-- Автоматизацию проверок, которая **ожидает дефект** и падает, если поведение внезапно стало корректным, —
-  это защищает от «тихого» изменения стенда.
-- Аккуратное оформление: README, docs, лицензия, .gitignore, CI.
+- Навык локализовать дефект до метода и строки кода — баг-репорты содержат причину и рекомендацию.
+- Аккуратная доказательная база: скриншоты для каждого дефекта и честная отметка непроверенных кейсов.
 
 ---
 

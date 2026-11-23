@@ -1,4 +1,4 @@
-# Окружение — Desktop QA Sandbox
+# Окружение — Desktop QA Sandbox (ручное тестирование)
 
 ## Стенд
 
@@ -6,7 +6,7 @@
 |-----------|----------|
 | ОС | Windows 11, 10.0.26300 |
 | Процессор | x64 |
-| .NET SDK | 11 (TFM `net11.0-windows`) |
+| .NET SDK | 11 (`net11.0-windows`) |
 | UI-фреймворк | Windows Forms |
 | Шрифт | Segoe UI 9.5–15 pt |
 | Экран | 1920×1080, масштаб 100 % |
@@ -24,20 +24,20 @@
 
 ## Инструменты
 
-| Инструмент | Версия/роль |
-|------------|-------------|
-| .NET SDK | 11 |
-| `dotnet build` | сборка Release |
-| System.Windows.Automation | UI Automation (UIA) |
-| PowerShell 5.1 | запуск, скриншоты, отладка |
-| `PrintWindow` (user32) | захват окна без фокуса |
+| Инструмент | Для чего |
+|------------|----------|
+| .NET SDK | сборка приложения |
+| `dotnet build` | получение исполняемого файла |
+| Снимок экрана Windows (Win+Shift+S / PrintScreen) | фиксация дефектов |
+| Проводник / блокнот | проверка файла заметки |
 | Markdown | отчётность |
+
+Дополнительных утилит репозиторий не содержит.
 
 ## Как собрать
 
 ```powershell
 dotnet build src/DesktopSandbox/DesktopSandbox.csproj -c Release
-dotnet build automation/DesktopSandbox.UiChecks/DesktopSandbox.UiChecks.csproj -c Release
 ```
 
 Ожидаемый результат: 0 предупреждений, 0 ошибок.
@@ -48,30 +48,17 @@ dotnet build automation/DesktopSandbox.UiChecks/DesktopSandbox.UiChecks.csproj -
 src\DesktopSandbox\bin\Release\net11.0-windows\DesktopSandbox.exe
 ```
 
-## Как прогнать проверки
+## Как выполнять проверки
 
-```powershell
-# UI-прогон: приложение запускается и управляется через UIA
-automation\DesktopSandbox.UiChecks\bin\Release\net11.0-windows\DesktopSandbox.UiChecks.exe `
-  src\DesktopSandbox\bin\Release\net11.0-windows\DesktopSandbox.exe
-
-# Логические проверки без UI (подходит для CI)
-dotnet run --project automation/DesktopSandbox.UiChecks -c Release -- --logic
-```
-
-## Как обновить скриншоты
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File automation/Capture-Evidence.ps1
-```
-
-Скрипт сам запускает приложение, выполняет сценарии и сохраняет PNG в `evidence/`.
+1. Открыть [`02-test-cases.md`](02-test-cases.md).
+2. Для каждого кейса выполнить шаги вручную, сравнить факт с ожиданием.
+3. При расхождении сделать снимок экрана и записать ID дефекта из [`03-defect-catalog.md`](03-defect-catalog.md).
+4. Итоги занести в [`05-test-summary.md`](05-test-summary.md).
 
 ## Особенности окружения
 
-- UI Automation требует **интерактивного рабочего стола**; в headless-агенте UI-прогон не запустится,
-  поэтому для CI предусмотрен режим `--logic`.
-- `PrintWindow` работает даже когда окно не в фокусе — это важно при параллельной работе.
-- Формат чисел фиксирован `InvariantCulture`, чтобы локаль (запятая/точка) не ломала проверки.
-- После UI-прогона процесс приложения принудительно завершается; перед повторным запуском убедитесь,
-  что старых процессов нет (`Stop-Process -Name DesktopSandbox`).
+- Формат чисел в приложении фиксирован `InvariantCulture`, поэтому локаль не влияет на результат.
+- Раздел Orders перед каждой проверкой сбрасывается кнопкой Reset — это возвращает 8 исходных заказов.
+- Заметка сохраняется в `%TEMP%\qa-sandbox-note.txt`; перед проверкой лимита можно удалить файл,
+  чтобы убедиться, что он перезаписывается.
+- Приложение однопользовательское и не требует сети.
